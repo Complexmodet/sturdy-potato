@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search with Autocomplete</title>
+    <style>
+    	/* style.css */
+body {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+}
+
+.search-container {
+    position: relative;
+    width: 300px;
+}
+
+#searchBox {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+}
+
+.suggestions {
+    position: absolute;
+    top: 40px;
+    left: 0;
+    width: 100%;
+    background-color: white;
+    border: 1px solid #ccc;
+    max-height: 200px;
+    overflow-y: auto;
+    display: none;
+}
+
+.suggestions div {
+    padding: 10px;
+    cursor: pointer;
+}
+
+.suggestions div:hover {
+    background-color: #f0f0f0;
+}
+    </style>
+</head>
+<body>
+    <div class="search-container">
+        <input type="search" id="searchBox" placeholder="Search for fruits..." autocomplete="off">
+        <div id="suggestions" class="suggestions"></div>
+    </div>
+
+    <script>
+    	// script.js
+const searchBox = document.getElementById('searchBox');
+const suggestionsBox = document.getElementById('suggestions');
+
+// Sample data for the search results
+const fruits = ['Apple', 'Banana', 'Orange', 'Mango', 'Pineapple', 'Strawberry', 'Blueberry', 'Grape', 'Watermelon'];
+
+// Function to filter the fruits list based on the user's input
+function filterSuggestions(query) {
+    const filteredFruits = fruits.filter(fruit => fruit.toLowerCase().includes(query.toLowerCase()));
+    displaySuggestions(filteredFruits);
+}
+
+// Function to display suggestions in the suggestions box
+function displaySuggestions(filteredFruits) {
+    suggestionsBox.innerHTML = ''; // Clear previous suggestions
+    if (filteredFruits.length === 0) {
+        suggestionsBox.style.display = 'none'; // Hide suggestions if no match
+        return;
+    }
+    filteredFruits.forEach(fruit => {
+        const suggestionItem = document.createElement('div');
+        suggestionItem.textContent = fruit;
+        suggestionItem.onclick = () => selectSuggestion(fruit); // Select a suggestion
+        suggestionsBox.appendChild(suggestionItem);
+    });
+    suggestionsBox.style.display = 'block'; // Show suggestions
+}
+
+// Function to handle the selection of a suggestion
+function selectSuggestion(fruit) {
+    searchBox.value = fruit; // Set the search box value to the selected suggestion
+    suggestionsBox.style.display = 'none'; // Hide suggestions after selection
+}
+
+// Event listener for the search box input
+searchBox.addEventListener('input', () => {
+    const query = searchBox.value;
+    if (query.length > 0) {
+        filterSuggestions(query); // Filter and display suggestions
+    } else {
+        suggestionsBox.style.display = 'none'; // Hide suggestions when search box is empty
+    }
+});
+
+// Event listener for clicking outside the suggestions box to close it
+document.addEventListener('click', (event) => {
+    if (!searchBox.contains(event.target) && !suggestionsBox.contains(event.target)) {
+        suggestionsBox.style.display = 'none';
+    }
+});
+    </script>
+</body>
+</html>
